@@ -4,9 +4,13 @@ authors = []
 description = ""
 telemetry = true
 requirements = []
+
 [contracts.memecoin-treasury]
 path = "contracts/memecoin-treasury.clar"
-depends_on = []
+depends_on = ["sbtc-token"]
+
+[contracts.sbtc-token]
+path = "contracts/sbtc-token.clar"
 
 [repl]
 costs_version = 2
