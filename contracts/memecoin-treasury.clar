@@ -26,3 +26,27 @@
         (ok (var-set release-schedule schedule))
     )
 )
+
+;; Deposit sBTC into the treasury
+(define-public (deposit-sbtc (sbtc-token <sbtc-trait>) (amount uint))
+    (begin
+        (asserts! (> amount u0) err-invalid-amount)
+        (try! (contract-call? sbtc-token transfer amount tx-sender (as-contract tx-sender)))
+        (var-set treasury-balance (+ (var-get treasury-balance) amount))
+        (ok true)
+    )
+)
+
+;; Withdraw sBTC from the treasury (only callable by the contract owner)
+(define-public (withdraw-sbtc (sbtc-token <sbtc-trait>))
+    (begin
+        (asserts! (is-eq tx-sender contract-owner) err-owner-only)
+        (let ((withdrawable (calculate-withdrawable)))
+            (asserts! (> withdrawable u0) err-funds-locked)
+            (try! (contract-call? sbtc-token transfer withdrawable (as-contract tx-sender) tx-sender))
+            (var-set treasury-balance (- (var-get treasury-balance) withdrawable))
+            (var-set last-withdrawal block-height)
+            (ok true)
+        )
+    )
+)
