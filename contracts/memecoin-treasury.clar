@@ -67,3 +67,19 @@
         (> (get amount entry) u0)
     )
 )
+;; Read-only functions
+
+;; Get the current treasury balance
+(define-read-only (get-treasury-balance)
+    (ok (var-get treasury-balance))
+)
+
+;; Get the release schedule
+(define-read-only (get-release-schedule)
+    (ok (var-get release-schedule))
+)
+
+;; Get the last withdrawal block height
+(define-read-only (get-last-withdrawal)
+    (ok (var-get last-withdrawal))
+)
