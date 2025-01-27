@@ -50,3 +50,20 @@
         )
     )
 )
+
+;; Helper functions
+
+;; Calculate the withdrawable amount based on the release schedule
+(define-private (calculate-withdrawable)
+    (fold + u0 
+        (map get amount 
+            (filter is-withdrawable (var-get release-schedule))))
+)
+
+;; Check if a schedule entry is withdrawable
+(define-private (is-withdrawable (entry {amount: uint, block-height: uint}))
+    (and 
+        (>= block-height (get block-height entry))
+        (> (get amount entry) u0)
+    )
+)
